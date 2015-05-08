@@ -3,6 +3,6 @@ SRV_TARGET := powd
 
 CFLAGS := -Wall -Wextra -pedantic -O2
 
-CLI_LDFLAGS :=
+CLI_LDFLAGS := -lSDL -lGL
 SRV_LDFLAGS :=
 SHARE_LDFLAGS :=

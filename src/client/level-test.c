@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
 #include "level.h"
-#define CUBE "cube.lff"
 
 static char *level =
 "1.000000 1.000000 -1.000000 1.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000 \n"

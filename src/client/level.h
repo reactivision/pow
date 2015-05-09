@@ -1,1 +1,1 @@
-int level_parse(char *s, float *buf);
+int level_parse(char *s, double buf[]);

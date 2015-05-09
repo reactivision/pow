@@ -1,11 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "level.h"
 
-int level_parse(char *s, float *buf)
+int level_parse(char *s, double buf[])
 {
+	char *p, *tmp;
 	int i;
 
-	for (i = 0; sscanf(s, "%f", &buf[i]) == 1; i++)
-		;
+	i = 0;
+	p = s;
+	for (tmp = NULL; (buf[i] = strtod(p, &tmp), p != tmp); p = tmp)
+		i++;
 	return i;
 }

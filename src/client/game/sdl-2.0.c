@@ -59,6 +59,10 @@ int game_input(int state[GAME_NBUTTONS])
 void game_quit(void)
 {
 	game_render_quit();
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	renderer = NULL;
+	window = NULL;
 	SDL_Quit();
 }
 

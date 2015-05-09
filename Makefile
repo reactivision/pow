@@ -1,10 +1,14 @@
 include config.mk
 
-CFLAGS += -Isrc/share
+CLI_PORT_SRC := $(shell find src/client -mindepth 1 -type d | sed 's/$$/.c/')
+SHARE_PORT_SRC := $(shell find src/share -mindepth 1 -type d | sed 's/$$/.c/')
+SRV_PORT_SRC := $(shell find src/server -mindepth 1 -type d | sed 's/$$/.c/')
 
-SHARE_SRC := $(wildcard src/share/*.c)
-CLI_SRC := $(wildcard src/client/*.c)
-SRV_SRC := $(wildcard src/server/*.c)
+CFLAGS += -Isrc/share -DCLIENT_NAME=\"$(CLI_TARGET)\" -DSERVER_NAME=\"$(SRV_TARGET)\"
+
+SHARE_SRC := $(wildcard src/share/*.c) $(SHARE_PORT_SRC)
+CLI_SRC := $(wildcard src/client/*.c) $(CLI_PORT_SRC)
+SRV_SRC := $(wildcard src/server/*.c) $(SRV_PORT_SRC)
 
 # Remove *-test.c files
 SHARE_SRC := $(SHARE_SRC:%-test.c=)
@@ -31,12 +35,14 @@ SHARE_TESTS := $(SHARE_TEST_SRC:.c=)
 CLI_TESTS := $(CLI_TEST_SRC:.c=)
 SRV_TESTS := $(SRV_TEST_SRC:.c=)
 
+.PHONY: clean $(SRV_PORT_SRC) $(CLI_PORT_SRC) $(SHARE_PORT_SRC)
+
 all: $(CLI_TARGET) $(SRV_TARGET)
 
 tests: $(SHARE_TESTS) $(CLI_TESTS) $(SRV_TESTS)
 
 clean:
-	rm -f $(CLI_TARGET) $(SRV_TARGET) $(SHARE_OBJ) $(CLI_OBJ) $(SRV_OBJ) $(SHARE_TESTS) $(CLI_TESTS) $(SRV_TESTS) $(SHARE_TEST_OBJ) $(CLI_TEST_OBJ) $(SRV_TEST_OBJ) src/client/main.o src/server/main.o
+	rm -f $(CLI_TARGET) $(SRV_TARGET) $(SHARE_OBJ) $(CLI_OBJ) $(SRV_OBJ) $(SHARE_TESTS) $(CLI_TESTS) $(SRV_TESTS) $(SHARE_TEST_OBJ) $(CLI_TEST_OBJ) $(SRV_TEST_OBJ) src/client/main.o src/server/main.o $(SHARE_PORT_SRC) $(CLI_PORT_SRC) $(SRV_PORT_SRC)
 
 $(CLI_TARGET): $(CLI_OBJ) $(SHARE_OBJ) src/client/main.o
 	@echo CC -o $@
@@ -60,6 +66,14 @@ $(SRV_TESTS): $(SRV_TEST_OBJ) $(SHARE_OBJ) $(SRV_OBJ)
 	@echo CC -o $@
 	@$(CC) $(CFLAGS) $(SHARE_OBJ) $(SRV_OBJ) $< -o $@ $(SHARE_LDFLAGS) $(SRV_LDFLAGS)
 	@./$@ && echo "$@: success"
+
+$(SRV_PORT_SRC) $(CLI_PORT_SRC) $(SHARE_PORT_SRC):
+	$(eval dir=$(shell echo $@ | sed 's/.c$$//'))
+	$(eval unit=$(shell basename $(dir)))
+	$(eval selection=$(dir)/$($(unit)).c)
+	@test -f $(selection) || (echo "usage: $(unit)=("$$(find $(dir) -type f | sed 's/\.c//;s/^.*\///')") make" > /dev/stderr; exit 1)
+	@rm -f $(dir).o
+	@cp -f $(selection) $@
 
 %.o: %.c
 	@echo CC $<

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "game.h"
+#include "game-render.h"
+#include "level.h"
 
 #define BUTTON_BINDINGS { 'w', 's', 'a', 'd', ' ', 'k', 'j', 'l', 'm', 'p' }
 #define WINDOW_WIDTH   800
@@ -29,11 +31,21 @@ int main(void)
 	struct game_output output = { 0 };
 	int state[GAME_NBUTTONS] = { 0 };
 	int old[GAME_NBUTTONS];
+	char *s;
+	static float buf[8192];
+	int v;
 
 	if (game_init(CLIENT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, button_bind)) {
 		fprintf(stderr, "error: game_init failed\n");
 		return EXIT_FAILURE;
 	}
+
+	if ((s = level_readfile("cube.lff")) == NULL)
+		return EXIT_FAILURE;
+	if ((v = level_parse(s, buf)) <= 0)
+		return EXIT_FAILURE;	
+	output.v = v;
+	output.buf = buf;
 	memcpy(old, state, sizeof old);
 	while (!game_input(state)) {
 		update(old, state);

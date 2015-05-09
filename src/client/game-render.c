@@ -25,12 +25,10 @@ void game_render_draw(const struct game_output *p)
 	glLoadIdentity();
 	glTranslatef(0.0, 0.0, -5.0);
 	glRotated(60.0, 3.0, 3.0, 3.0);
-/***
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, buf);
-	glDrawArrays(GL_TRIANGLES, 0, v);
+	glVertexPointer(3, GL_FLOAT, 0, p->buf);
+	glDrawArrays(GL_TRIANGLES, 0, p->v);
 	glDisableClientState(GL_VERTEX_ARRAY);
- ***/
 }
 
 void game_render_quit(void)

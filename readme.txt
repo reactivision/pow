@@ -5,9 +5,9 @@ Directory structure
 
 	The implementation of those headers and tests should be stored alongside
 	the header files. Files with multiple implementations can be placed in a
-	sub-directory and the suitable implementation can be copied into the
-	parent directory (perhaps by config.mk+Makefile?); sub-directories are
-	ignored entirely by Makefile.
+	sub-directory and the desired implementation will be copied by make into
+	the parent directory at build time. The file will have the same name as
+	the sub-directory, with the .c suffix added.
 
 Special files
 	client/main.c and server/main.c are the entry points for the client and

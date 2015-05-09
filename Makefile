@@ -4,6 +4,8 @@ CLI_PORT_SRC := $(shell find src/client -mindepth 1 -type d | sed 's/$$/.c/')
 SHARE_PORT_SRC := $(shell find src/share -mindepth 1 -type d | sed 's/$$/.c/')
 SRV_PORT_SRC := $(shell find src/server -mindepth 1 -type d | sed 's/$$/.c/')
 
+$(shell rm -f $(CLI_PORT_SRC) $(SHARE_PORT_SRC) $(SRV_PORT_SRC))
+
 CFLAGS += -Isrc/share -DCLIENT_NAME=\"$(CLI_TARGET)\" -DSERVER_NAME=\"$(SRV_TARGET)\"
 
 SHARE_SRC := $(wildcard src/share/*.c) $(SHARE_PORT_SRC)
@@ -35,7 +37,7 @@ SHARE_TESTS := $(SHARE_TEST_SRC:.c=)
 CLI_TESTS := $(CLI_TEST_SRC:.c=)
 SRV_TESTS := $(SRV_TEST_SRC:.c=)
 
-.PHONY: clean $(SRV_PORT_SRC) $(CLI_PORT_SRC) $(SHARE_PORT_SRC)
+.PHONY: clean
 
 all: $(CLI_TARGET) $(SRV_TARGET)
 
@@ -72,7 +74,6 @@ $(SRV_PORT_SRC) $(CLI_PORT_SRC) $(SHARE_PORT_SRC):
 	$(eval unit=$(shell basename $(dir)))
 	$(eval selection=$(dir)/$($(unit)).c)
 	@test -f $(selection) || (echo "usage: $(unit)=("$$(find $(dir) -type f | sed 's/\.c//;s/^.*\///')") make" > /dev/stderr; exit 1)
-	@rm -f $(dir).o
 	@cp -f $(selection) $@
 
 %.o: %.c

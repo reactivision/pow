@@ -4,7 +4,8 @@ enum {
 };
 
 struct game_output {
-	int unused;
+	float *buf;
+	int v;
 };
 
 /* game_init: create a game window, register button bindings */

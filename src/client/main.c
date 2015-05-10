@@ -31,7 +31,6 @@ int main(void)
 	struct game_output output = { 0 };
 	int state[GAME_NBUTTONS] = { 0 };
 	int old[GAME_NBUTTONS];
-	char *s;
 	static float buf[8192];
 	int v;
 
@@ -39,11 +38,11 @@ int main(void)
 		fprintf(stderr, "error: game_init failed\n");
 		return EXIT_FAILURE;
 	}
-
-	if ((s = level_readfile("cube.lff")) == NULL)
+	if ((v = level_parsef("cube.lff", buf)) <= 0) {
+		fprintf(stderr, "error: can't read cube.lff\n");
+		game_quit();
 		return EXIT_FAILURE;
-	if ((v = level_parse(s, buf)) <= 0)
-		return EXIT_FAILURE;	
+	}
 	output.v = v;
 	output.buf = buf;
 	memcpy(old, state, sizeof old);

@@ -10,7 +10,7 @@ static char *level =
 
 int main(void)
 {	
-	static double buf[8192];
+	static float buf[8192];
 
 	assert(level_parse(level, buf) >= 1);
 	assert(buf[0] == 1.0 || buf[1] == 1.0 || buf[2] == -1.0);

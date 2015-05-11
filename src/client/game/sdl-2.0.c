@@ -18,7 +18,7 @@ int game_init(const char *title, int width, int height, int kb[GAME_NBUTTONS])
 		return -1;
 	}
 	
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 	if (renderer == NULL) {
 		SDL_Quit();
 		return -1;

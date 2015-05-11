@@ -20,15 +20,20 @@ void game_render_init(int width, int height)
 
 void game_render_draw(const struct game_output *p)
 {
+	int i;
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0.0, 0.0, -5.0);
 	glRotated(60.0, 3.0, 3.0, 3.0);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, p->buf);
-	glDrawArrays(GL_TRIANGLES, 0, p->v);
-	glDisableClientState(GL_VERTEX_ARRAY);
+	for (i = 0; i < p->nmdl; i++) {
+		glTranslatef(p->mdl[i].pos[0], p->mdl[i].pos[1], p->mdl[i].pos[2]);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_FLOAT, 0, p->mdl[i].geom);
+		glDrawArrays(GL_TRIANGLES, 0, p->mdl[i].vert);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
 }
 
 void game_render_quit(void)

@@ -3,9 +3,15 @@ enum {
 	GAME_GRAB, GAME_FLIP, GAME_LSPIN, GAME_RSPIN, GAME_NBUTTONS
 };
 
+struct model {
+	float *geom;
+	int vert;
+	float pos[3];
+};
+
 struct game_output {
-	float *buf;
-	int v;
+	struct model *mdl;
+	int nmdl;
 };
 
 /* game_init: create a game window, register button bindings */

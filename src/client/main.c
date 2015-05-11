@@ -8,10 +8,19 @@
 #define BUTTON_BINDINGS { 'w', 's', 'a', 'd', ' ', 'k', 'j', 'l', 'm', 'p' }
 #define WINDOW_WIDTH   800
 #define WINDOW_HEIGHT  600
+#define MODELS 2
+
+enum {
+	FLOOR, SKATER
+};
 
 static char *button_name[] = {
 	"Up", "Down", "Left", "Right",
 	"Ollie", "Grind", "Grab", "Flip", "LSpin", "RSpin"
+};
+
+static char *file[] = {
+	"cube.lff", "sphere.lff", NULL
 };
 
 static int button_bind[] = BUTTON_BINDINGS;
@@ -28,27 +37,42 @@ static void update(int *old, int *new)
 
 int main(void)
 {
+	static struct model models[sizeof file / sizeof file[0]];
+	static float geom[sizeof file / sizeof file[0]][8192];
 	struct game_output output = { 0 };
 	int state[GAME_NBUTTONS] = { 0 };
 	int old[GAME_NBUTTONS];
-	static float buf[8192];
-	int v;
+	int i;
 
 	if (game_init(CLIENT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, button_bind)) {
 		fprintf(stderr, "error: game_init failed\n");
 		return EXIT_FAILURE;
 	}
-	if ((v = level_parsef("cube.lff", buf)) <= 0) {
-		fprintf(stderr, "error: can't read cube.lff\n");
-		game_quit();
-		return EXIT_FAILURE;
+
+	output.mdl = models;
+	for (i = 0; file[i] != NULL; i++) {
+		output.mdl[i].geom = geom[i];
+		output.mdl[i].vert = level_parsef(file[i], output.mdl[i].geom);
+		if (output.mdl[i].vert <= 0) {
+			fprintf(stderr, "error: can't read %s\n", file[i]);
+			game_quit();
+			return EXIT_FAILURE;
+		}
 	}
-	output.v = v;
-	output.buf = buf;
+
+	output.nmdl = i;
+	output.mdl[FLOOR].pos[0] = 0.0;
+	output.mdl[FLOOR].pos[1] = 0.0;
+	output.mdl[FLOOR].pos[2] = -5.0;
+	output.mdl[SKATER].pos[0] = 0.0;
+	output.mdl[SKATER].pos[1] = 0.0;
+	output.mdl[SKATER].pos[1] = -5.0;
 	memcpy(old, state, sizeof old);
 	while (!game_input(state)) {
 		update(old, state);
 		memcpy(old, state, sizeof old);
+		output.mdl[FLOOR].pos[1] += 0.001;
+		output.mdl[SKATER].pos[0] += 0.01;
 		game_render(&output);
 	}
 	game_quit();

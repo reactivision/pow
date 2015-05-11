@@ -8,7 +8,7 @@
 #define BUTTON_BINDINGS { 'w', 's', 'a', 'd', ' ', 'k', 'j', 'l', 'm', 'p' }
 #define WINDOW_WIDTH   800
 #define WINDOW_HEIGHT  600
-#define MODELS 2
+#define SPEED 0.1
 
 enum {
 	FLOOR, SKATER
@@ -33,6 +33,29 @@ static void update(int *old, int *new)
 		if (old[i] != new[i])
 			printf("%s: %s\n", button_name[i],
 			       new[i] ? "press" : "release");
+}
+
+static void skate(int state[GAME_NBUTTONS], struct game_output *p)
+{
+	if (state[GAME_LEFT] == 1)
+		p->mdl[SKATER].pos[2] -= SPEED;
+	else if (state[GAME_RIGHT] == 1)
+		p->mdl[SKATER].pos[2] += SPEED;
+	else if (state[GAME_UP] == 1)
+		p->mdl[SKATER].pos[0] += SPEED;
+	else if (state[GAME_DOWN] == 1)
+		p->mdl[SKATER].pos[0] -= SPEED;
+}
+
+static void set_init(struct game_output *p)
+{
+	int i;
+
+	for (i = 0; i < p->nmdl; i++) {
+		p->mdl[i].pos[0] = 0.0;
+		p->mdl[i].pos[1] = 0.0;
+		p->mdl[i].pos[2] = -5.0;
+	}
 }
 
 int main(void)
@@ -61,18 +84,12 @@ int main(void)
 	}
 
 	output.nmdl = i;
-	output.mdl[FLOOR].pos[0] = 0.0;
-	output.mdl[FLOOR].pos[1] = 0.0;
-	output.mdl[FLOOR].pos[2] = -5.0;
-	output.mdl[SKATER].pos[0] = 0.0;
-	output.mdl[SKATER].pos[1] = 0.0;
-	output.mdl[SKATER].pos[1] = -5.0;
+	set_init(&output);
 	memcpy(old, state, sizeof old);
 	while (!game_input(state)) {
 		update(old, state);
 		memcpy(old, state, sizeof old);
-		output.mdl[FLOOR].pos[1] += 0.001;
-		output.mdl[SKATER].pos[0] += 0.01;
+		skate(state, &output);
 		game_render(&output);
 	}
 	game_quit();

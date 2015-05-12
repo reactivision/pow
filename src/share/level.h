@@ -1,2 +1,8 @@
-int level_parse(char *s, float buf[]);
-int level_parsef(char *path, float buf[]);
+struct level {
+	float *geom;
+	long ngeom;
+};
+
+int level_parse(struct level *to, const char *data);
+int level_parsef(struct level *to, const char *path);
+

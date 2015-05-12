@@ -61,7 +61,6 @@ static void set_init(struct game_output *p)
 int main(void)
 {
 	static struct model models[sizeof file / sizeof file[0]];
-	static float geom[sizeof file / sizeof file[0]][8192];
 	struct game_output output = { 0 };
 	int state[GAME_NBUTTONS] = { 0 };
 	int old[GAME_NBUTTONS];
@@ -74,13 +73,15 @@ int main(void)
 
 	output.mdl = models;
 	for (i = 0; file[i] != NULL; i++) {
-		output.mdl[i].geom = geom[i];
-		output.mdl[i].vert = level_parsef(file[i], output.mdl[i].geom);
-		if (output.mdl[i].vert <= 0) {
-			fprintf(stderr, "error: can't read %s\n", file[i]);
+		struct level lvl;
+
+		if (level_parsef(&lvl, file[i])) {
+			fprintf(stderr, "%s: can't load level data\n", file[i]);
 			game_quit();
 			return EXIT_FAILURE;
 		}
+		output.mdl[i].geom = lvl.geom;
+		output.mdl[i].vert = lvl.ngeom;
 	}
 
 	output.nmdl = i;
@@ -92,6 +93,8 @@ int main(void)
 		skate(state, &output);
 		game_render(&output);
 	}
+	for (i = 0; file[i] != NULL; i++)
+		free(output.mdl[i].geom);
 	game_quit();
 	return 0;
 }

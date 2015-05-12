@@ -2,9 +2,7 @@
 #include <assert.h>
 #include "level.h"
 
-#define nelems(a) ((int) (sizeof (a) / sizeof ((a)[0])))
-
-static char *level =
+static char *input =
 	"1.000000 1.000000 -1.000000 "
 	"1.000000 -1.000000 -1.000000 "
 	"-1.000000 -1.000000 -1.000000 \n"
@@ -21,7 +19,7 @@ static char *level =
 	"0.999999 -1.000001 1.000000 "
 	"1.000000 0.999999 1.000000 \n";
 
-static float expected[] = {
+static float expected_geometry[] = {
 	1.0, 1.0, -1.0,
 	1.0, -1.0, -1.0,
 	-1.0, -1.0, -1.0,
@@ -41,11 +39,15 @@ static float expected[] = {
 
 int main(void)
 {
-	static float test[nelems(expected) + 1];
-	int i;
+	struct level expected, real;
+	long i;
 
-	assert(level_parse(level, test) == nelems (expected));
-	for (i = 0; i < nelems (expected); i++)
-		assert(test[i] == expected[i]);
+	expected.geom = expected_geometry;
+	expected.ngeom = sizeof expected_geometry / sizeof expected_geometry[0];
+
+	assert(level_parse(&real, input) == 0);
+	assert(real.ngeom == expected.ngeom);
+	for (i = 0; i < real.ngeom; i++)
+		assert(real.geom[i] == expected.geom[i]);
 	return 0;
 }

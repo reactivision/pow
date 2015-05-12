@@ -20,7 +20,7 @@ static char *button_name[] = {
 };
 
 static char *file[] = {
-	"cube.lff", "sphere.lff", NULL
+	"data/cube.lff", "data/sphere.lff", NULL
 };
 
 static int button_bind[] = BUTTON_BINDINGS;

@@ -26,7 +26,6 @@ void game_render_draw(const struct game_output *p)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0.0, 0.0, -5.0);
-	glRotated(60.0, 3.0, 3.0, 3.0);
 	for (i = 0; i < p->nmdl; i++) {
 		glTranslatef(p->mdl[i].pos[0], p->mdl[i].pos[1], p->mdl[i].pos[2]);
 		glEnableClientState(GL_VERTEX_ARRAY);

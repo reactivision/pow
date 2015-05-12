@@ -6,7 +6,7 @@ enum {
 struct model {
 	float *geom;
 	int vert;
-	float pos[3];
+	float pos[3], vel[3];
 };
 
 struct game_output {

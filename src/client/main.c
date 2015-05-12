@@ -38,13 +38,13 @@ static void update(int *old, int *new)
 static void skate(int state[GAME_NBUTTONS], struct game_output *p)
 {
 	if (state[GAME_LEFT])
-		p->mdl[SKATER].pos[2] -= SPEED;
-	else if (state[GAME_RIGHT])
-		p->mdl[SKATER].pos[2] += SPEED;
-	else if (state[GAME_UP])
-		p->mdl[SKATER].pos[0] += SPEED;
-	else if (state[GAME_DOWN])
 		p->mdl[SKATER].pos[0] -= SPEED;
+	else if (state[GAME_RIGHT])
+		p->mdl[SKATER].pos[0] += SPEED;
+	else if (state[GAME_UP])
+		p->mdl[SKATER].pos[2] -= SPEED;
+	else if (state[GAME_DOWN])
+		p->mdl[SKATER].pos[2] += SPEED;	
 }
 
 static void set_init(struct game_output *p)

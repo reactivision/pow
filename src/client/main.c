@@ -11,7 +11,7 @@
 #define SPEED 0.1
 
 enum {
-	FLOOR, SKATER, RAIL
+	FLOOR, SKATER
 };
 
 static char *button_name[] = {
@@ -20,7 +20,7 @@ static char *button_name[] = {
 };
 
 static char *file[] = {
-	"data/cube.lff", "data/sphere.lff",  "data/rail.lff", NULL
+	"data/cube.lff", "data/sphere.lff", NULL
 };
 
 static int button_bind[] = BUTTON_BINDINGS;
@@ -38,13 +38,13 @@ static void update(int *old, int *new)
 static void skate(int state[GAME_NBUTTONS], struct game_output *p)
 {
 	if (state[GAME_LEFT])
-		p->mdl[SKATER].pos[0] -= SPEED;
-	else if (state[GAME_RIGHT])
-		p->mdl[SKATER].pos[0] += SPEED;
+		p->mdl[FLOOR].pos[0] += SPEED;
+	if (state[GAME_RIGHT])
+		p->mdl[FLOOR].pos[0] -= SPEED;
 	if (state[GAME_UP])
-		p->mdl[SKATER].pos[2] -= SPEED;
-	else if (state[GAME_DOWN])
-		p->mdl[SKATER].pos[2] += SPEED;
+		p->mdl[FLOOR].pos[2] += SPEED;
+	if (state[GAME_DOWN])
+		p->mdl[FLOOR].pos[2] -= SPEED;
 }
 
 static void set_init(struct game_output *p)
@@ -60,8 +60,6 @@ static void set_init(struct game_output *p)
 	p->mdl[SKATER].rgb[0] = 1.0;
 	p->mdl[SKATER].rgb[1] = p->mdl[SKATER].rgb[2] = 0.0;
 	p->mdl[FLOOR].rgb[0] = p->mdl[FLOOR].rgb[1] = p->mdl[FLOOR].rgb[2] = 1.0;
-	p->mdl[RAIL].rgb[0] = p->mdl[RAIL].rgb[2] = 1.0;
-	p->mdl[RAIL].rgb[1] = 0.0;
 }
 
 int main(void)

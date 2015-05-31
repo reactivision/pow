@@ -16,3 +16,4 @@ Special files
 	fail loudly and return EXIT_FAILURE on a failed test, and quietly return
 	0 on success. All other files suffixed with .c are compiled and included
 	in the program.
+RIP zyxwvuts

@@ -9,6 +9,7 @@
 #define WINDOW_WIDTH   800
 #define WINDOW_HEIGHT  600
 #define SPEED 0.1
+#define ROT_SPEED 0.8
 
 enum {
 	FLOOR, SKATER
@@ -38,9 +39,9 @@ static void update(int *old, int *new)
 static void skate(int state[GAME_NBUTTONS], struct game_output *p)
 {
 	if (state[GAME_LEFT])
-		p->mdl[FLOOR].pos[0] += SPEED;
+		p->mdl[FLOOR].rot[0] -= ROT_SPEED;
 	if (state[GAME_RIGHT])
-		p->mdl[FLOOR].pos[0] -= SPEED;
+		p->mdl[FLOOR].rot[0] += ROT_SPEED;
 	if (state[GAME_UP])
 		p->mdl[FLOOR].pos[2] += SPEED;
 	if (state[GAME_DOWN])
@@ -60,6 +61,8 @@ static void set_init(struct game_output *p)
 	p->mdl[SKATER].rgb[0] = 1.0;
 	p->mdl[SKATER].rgb[1] = p->mdl[SKATER].rgb[2] = 0.0;
 	p->mdl[FLOOR].rgb[0] = p->mdl[FLOOR].rgb[1] = p->mdl[FLOOR].rgb[2] = 1.0;
+	p->mdl[FLOOR].rot[0] = 90;
+	p->mdl[FLOOR].rot[2] = 150;
 }
 
 int main(void)

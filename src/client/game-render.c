@@ -30,6 +30,8 @@ void game_render_draw(const struct game_output *p)
 		glPushMatrix();
 		glColor3f(p->mdl[i].rgb[0], p->mdl[i].rgb[1], p->mdl[i].rgb[2]);
 		glTranslatef(p->mdl[i].pos[0], p->mdl[i].pos[1], p->mdl[i].pos[2]);
+		glRotatef(p->mdl[i].rot[0], p->mdl[i].rot[1], p->mdl[i].rot[2],
+			  p->mdl[i].rot[3]);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, p->mdl[i].geom);
 		glDrawArrays(GL_TRIANGLES, 0, p->mdl[i].vert / 3);
